@@ -2,7 +2,7 @@ import uuid, yaml
 from pydantic import BaseModel
 from PIL import Image, ImageDraw, ImageFont
 
-from scripts.config import dataset
+from config.settings import DatasetConfig
 
 class Converter:
     def __init__(self, config: BaseModel):
@@ -21,7 +21,7 @@ class Converter:
     def convert_image(self, image: Image.Image) -> str:
         self.data = []
         self.width, self.height = image.size
-        self.image = image.convert("RGB").resize(dataset.image_size)
+        self.image = image.convert("RGB").resize(DatasetConfig.image_size)
 
     def convert_bbox(self, bbox: tuple[float, float, float, float], category_id: int):
         x_min, y_min, width, height = bbox

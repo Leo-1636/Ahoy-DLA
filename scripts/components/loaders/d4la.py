@@ -5,7 +5,7 @@ from PIL import Image
 from tqdm import tqdm
 
 from components.converter import Converter
-from scripts.config import D4LA
+from config.datasets import D4LA
 
 D4LA_ROOT = Path("D4LA")
 

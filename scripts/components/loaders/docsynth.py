@@ -4,7 +4,7 @@ from tqdm import tqdm
 from datasets import load_dataset
 
 from components.converter import Converter
-from scripts.config import DocSynth300K
+from config.datasets import DocSynth300K
 
 def extract_data(string_datas: list, image: Image.Image) -> list[tuple[tuple[float, float, float, float], int]]:
     elements = []

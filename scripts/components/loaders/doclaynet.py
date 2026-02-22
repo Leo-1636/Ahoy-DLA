@@ -2,7 +2,7 @@ from tqdm import tqdm
 from datasets import load_dataset
 
 from components.converter import Converter
-from scripts.config import DocLayNet
+from config.datasets import DocLayNet
 
 def load_doclaynet():
     dataset = load_dataset(DocLayNet.name)
