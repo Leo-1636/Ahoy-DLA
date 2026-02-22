@@ -1,0 +1,8 @@
+datasets
+Pillow
+pydantic
+PyYAML
+python-dotenv
+tqdm
+ultralytics
+wandb
