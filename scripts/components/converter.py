@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from PIL import Image, ImageDraw, ImageFont
 
 from config.settings import DatasetConfig
+from config.datasets import DLA
 
 class Converter:
     def __init__(self, config: BaseModel):
@@ -13,11 +14,19 @@ class Converter:
     def prepare_path(self, split_name: str) -> None:
         self.labels_path = self.path / "labels" / split_name
         self.images_path = self.path / "images" / split_name
-        self.visuals_path = self.path / "visuals" 
-        self.labels_path.mkdir(parents = True, exist_ok = True)
-        self.images_path.mkdir(parents = True, exist_ok = True)
-        self.visuals_path.mkdir(parents = True, exist_ok = True)
+        self.visuals_path = self.path / "visuals"
+        self.mapped_labels_path = DLA.path / "labels" / split_name
+        self.mapped_images_path = DLA.path / "images" / split_name
 
+        for path in (
+            self.labels_path,
+            self.images_path,
+            self.visuals_path,
+            self.mapped_labels_path,
+            self.mapped_images_path,
+        ):
+            path.mkdir(parents = True, exist_ok = True)
+    
     def convert_image(self, image: Image.Image) -> str:
         self.data = []
         self.width, self.height = image.size
@@ -33,9 +42,13 @@ class Converter:
 
     def convert_labels(self):
         self.labels = []
+        self.mapped_labels = []
         for x_center, y_center, width, height, category_id in self.data:
             self.labels.append(f"{category_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}")
-
+            
+            if DLA.label_map[category_id] != -1:
+                self.mapped_labels.append(f"{DLA.label_map[category_id]} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}")
+    
     def visual_data(self):
         self.visual = self.image.copy()
         image_width, image_height = self.image.size
@@ -57,6 +70,9 @@ class Converter:
         self.visual.save(self.visuals_path / f"{data_id}.png", format = "PNG", quality = 100)
         (self.labels_path / f"{data_id}.txt").write_text("\n".join(self.labels), encoding = "utf-8")
 
+        self.image.save(self.mapped_images_path / f"{data_id}.jpg", format = "JPEG", quality = 100)
+        (self.mapped_labels_path / f"{data_id}.txt").write_text("\n".join(self.mapped_labels), encoding = "utf-8")
+        
     def save_yaml(self):
         self.path.mkdir(parents = True, exist_ok = True)
         data = {
@@ -65,5 +81,5 @@ class Converter:
             **{split: f"images/{split}" for split in self.splits},
         }
         yaml_path = self.path / "dataset.yaml"
-        with yaml_path.open("w", encoding="utf-8") as file:
+        with yaml_path.open("w", encoding = "utf-8") as file:
             yaml.safe_dump(data, file, allow_unicode = True, sort_keys = False)

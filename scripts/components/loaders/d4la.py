@@ -40,6 +40,7 @@ def load_d4la():
                 converter.convert_labels()
                 converter.visual_data()
                 converter.save_data()
+                converter.save_yaml()
             except Exception as e:
                 print(f"Error processing {split_name}: {e}")
                 continue

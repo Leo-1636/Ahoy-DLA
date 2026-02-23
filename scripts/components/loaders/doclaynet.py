@@ -19,6 +19,7 @@ def load_doclaynet():
                 converter.convert_labels()
                 converter.visual_data()
                 converter.save_data()
+                converter.save_yaml()
             except Exception as e:
                 print(f"Error processing {split_name} dataset: {e}")
                 continue

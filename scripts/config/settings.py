@@ -12,7 +12,7 @@ class ModelConfig:
 
 class TrainConfig:
     epochs = 50
-    batch_size = 16
+    batch_size = 24
     image_size = 640
 
 class DatasetConfig:
