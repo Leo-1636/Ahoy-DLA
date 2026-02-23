@@ -3,30 +3,24 @@ from pydantic import BaseModel
 from PIL import Image, ImageDraw, ImageFont
 
 from config.settings import DatasetConfig
-from config.datasets import DLA
+from config.datasets import OmniDLA
 
 class Converter:
     def __init__(self, config: BaseModel):
-        self.path = config.path
-        self.splits = config.splits
-        self.class_names = config.class_names
+        self.config = config
+        self.path = self.config.path
+        self.splits = self.config.splits
+        self.class_names = self.config.class_names
 
     def prepare_path(self, split_name: str) -> None:
         self.labels_path = self.path / "labels" / split_name
         self.images_path = self.path / "images" / split_name
-        self.visuals_path = self.path / "visuals"
-        self.mapped_labels_path = DLA.path / "labels" / split_name
-        self.mapped_images_path = DLA.path / "images" / split_name
+        self.mapped_labels_path = OmniDLA.path / "labels" / split_name
+        self.mapped_images_path = OmniDLA.path / "images" / split_name
 
-        for path in (
-            self.labels_path,
-            self.images_path,
-            self.visuals_path,
-            self.mapped_labels_path,
-            self.mapped_images_path,
-        ):
+        for path in (self.labels_path, self.images_path, self.mapped_labels_path, self.mapped_images_path):
             path.mkdir(parents = True, exist_ok = True)
-    
+
     def convert_image(self, image: Image.Image) -> str:
         self.data = []
         self.width, self.height = image.size
@@ -46,10 +40,14 @@ class Converter:
         for x_center, y_center, width, height, category_id in self.data:
             self.labels.append(f"{category_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}")
             
-            if DLA.label_map[category_id] != -1:
-                self.mapped_labels.append(f"{DLA.label_map[category_id]} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}")
+            category_id = self.config.label_map[category_id]
+            if category_id != -1:
+                self.mapped_labels.append(f"{category_id} {x_center:.6f} {y_center:.6f} {width:.6f} {height:.6f}")
     
     def visual_data(self):
+        self.visuals_path = self.path / "visuals"
+        self.visuals_path.mkdir(parents = True, exist_ok = True)
+
         self.visual = self.image.copy()
         image_width, image_height = self.image.size
 
