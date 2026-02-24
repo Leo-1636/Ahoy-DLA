@@ -9,7 +9,7 @@ from config.settings import DatasetConfig
 class OmniDLA(BaseModel):
     name: ClassVar[str] = "omnidla/OmniDLA"
     path: ClassVar[Path] = DatasetConfig.path / "OmniDLA"
-    splits: ClassVar[list[str]] = ["train", "val", "test"]
+    splits: ClassVar[list[str]] = ["train", "validation", "test"]
     class_names: ClassVar[dict[int, str]] = {
         0: "None",
         1: "Caption",
@@ -28,7 +28,7 @@ class OmniDLA(BaseModel):
 class DocLayNet(BaseModel):
     name: ClassVar[str] = "ds4sd/DocLayNet-v1.2"
     path: ClassVar[Path] = DatasetConfig.path / "DocLayNet"
-    splits: ClassVar[list[str]] = ["train", "val", "test"]
+    splits: ClassVar[list[str]] = ["train", "validation", "test"]
     class_names: ClassVar[dict[int, str]] = {
         0: "None",
         1: "Caption",

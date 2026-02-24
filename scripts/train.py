@@ -12,6 +12,6 @@ model.train(
     epochs = TrainConfig.epochs,
     imgsz = TrainConfig.image_size,
     batch = TrainConfig.batch_size,
-    project = "Ahoy-RAG YOLO26",
+    project = "Ahoy-DLA",
     name = "train",
 )

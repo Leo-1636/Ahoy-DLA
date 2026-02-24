@@ -4,6 +4,7 @@
 
 *.pt
 
+runs/
 datasets/
 
 __pycache__/
